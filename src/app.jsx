@@ -83,8 +83,10 @@ function App(){
       if(k==="enter"||k==="escape"){ e.preventDefault(); proceed(); return; }
       return;
     }
-    if(e.key===" "){ e.preventDefault(); if(!s.anim) play(); }
-    if(k==="d" && !s.anim) discard();
+    // During scoring animation, ignore hotkeys entirely
+    if(s.anim) return;
+    if(e.key===" "){ e.preventDefault(); play(); }
+    if(k==="d") discard();
     if(k==="r") setSort("rank");
     if(k==="u") setSort("suit");
     if(k==="n") setSort("none");
@@ -251,10 +253,12 @@ function App(){
 
         <div className="rounded-2xl p-3 bg-white/80 dark:bg-slate-800/70 border mt-3"
              onMouseLeave={()=>setS(x=>({...x,drag:false,dragMode:null}))}
-             onContextMenu={e=>{ e.preventDefault(); }}>
+             onContextMenu={e=>{ e.preventDefault(); }}
+             style={s.anim?{pointerEvents:'none',opacity:1}:{}}>
           <div className="flex flex-wrap">
             {s.hand.map(c=>{
               const onDown = e => {
+                if(s.anim) return; // lock during scoring
                 e.preventDefault();
                 const right = e.button===2;
                 setS(x=>({...x,drag:true,dragMode:right?"remove":"add"}));
@@ -284,9 +288,9 @@ function App(){
             <button onClick={()=>play()} disabled={s.anim||s.hands<=0||!sel.length} className="px-4 py-2 rounded-xl bg-indigo-600 text-white disabled:opacity-50">Play</button>
             <div className="ml-2 flex items-center gap-1 text-xs">
               <span className="opacity-80">Sort:</span>
-              <button onClick={()=>setSort("rank")} className={`px-3 py-1.5 rounded-xl border ${s.sort==="rank"?"bg-slate-900 text-white":"bg-white/80 dark:bg-slate-700"}`}>Rank</button>
-              <button onClick={()=>setSort("suit")} className={`px-3 py-1.5 rounded-xl border ${s.sort==="suit"?"bg-slate-900 text-white":"bg-white/80 dark:bg-slate-700"}`}>Suit</button>
-              <button onClick={()=>setSort("none")} className={`px-3 py-1.5 rounded-xl border ${s.sort==="none"?"bg-slate-900 text-white":"bg-white/80 dark:bg-slate-700"}`}>None</button>
+              <button onClick={()=>setSort("rank")} disabled={s.anim||s.inShop} className={`px-3 py-1.5 rounded-xl border disabled:opacity-50 ${s.sort==="rank"?"bg-slate-900 text-white":"bg-white/80 dark:bg-slate-700"}`}>Rank</button>
+              <button onClick={()=>setSort("suit")} disabled={s.anim||s.inShop} className={`px-3 py-1.5 rounded-xl border disabled:opacity-50 ${s.sort==="suit"?"bg-slate-900 text-white":"bg-white/80 dark:bg-slate-700"}`}>Suit</button>
+              <button onClick={()=>setSort("none")} disabled={s.anim||s.inShop} className={`px-3 py-1.5 rounded-xl border disabled:opacity-50 ${s.sort==="none"?"bg-slate-900 text-white":"bg-white/80 dark:bg-slate-700"}`}>None</button>
             </div>
             <button onClick={()=>discard()} disabled={s.anim||s.discards<=0||!sel.length} className="ml-auto px-4 py-2 rounded-xl bg-slate-700 text-white disabled:opacity-50">Discard</button>
           </div>
