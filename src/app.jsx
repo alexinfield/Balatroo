@@ -81,6 +81,7 @@ function App(){
     if(k==="d" && !s.inShop && !s.anim) discard();
     if(k==="r") setSort("rank");
     if(k==="u") setSort("suit");
+    if(k==="n") setSort("none");
     if(k==="c") setSel([]);
     if(s.inShop && (k==="enter"||k==="escape")) proceed();
   };

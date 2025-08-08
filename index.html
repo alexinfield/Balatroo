@@ -20,5 +20,15 @@
 
   <!-- Your app code -->
   <script type="text/babel" data-presets="react" src="./src/app.jsx"></script>
+
+  <script>
+    // Show a helpful note if opened as a local file where Chrome blocks XHR to ./src/app.jsx
+    if (location.protocol === 'file:') {
+      const warn = document.createElement('div');
+      warn.style.cssText = 'position:fixed;left:12px;right:12px;bottom:12px;padding:10px 12px;background:#fff3cd;color:#664d03;border:1px solid #ffecb5;border-radius:12px;box-shadow:0 2px 8px rgba(0,0,0,.08);z-index:9999;font:14px system-ui';
+      warn.textContent = 'Tip: Open via a local server (e.g., VS Code Live Server). Browsers may block loading ./src/app.jsx when using file://. GitHub Pages will work normally.';
+      document.body.appendChild(warn);
+    }
+  </script>
 </body>
 </html>
