@@ -77,13 +77,18 @@ function App(){
   useEffect(()=>{ const onKey=e=>{
     if((e.target?.tagName)==="INPUT")return;
     const k=e.key.toLowerCase();
-    if(e.key===" "){ e.preventDefault(); if(!s.inShop && !s.anim) play(); }
-    if(k==="d" && !s.inShop && !s.anim) discard();
+    // When in shop: handle number hotkeys and proceed keys, ignore gameplay keys
+    if(s.inShop){
+      if(["1","2","3"].includes(k)) { e.preventDefault(); buy(parseInt(k,10)-1); return; }
+      if(k==="enter"||k==="escape"){ e.preventDefault(); proceed(); return; }
+      return;
+    }
+    if(e.key===" "){ e.preventDefault(); if(!s.anim) play(); }
+    if(k==="d" && !s.anim) discard();
     if(k==="r") setSort("rank");
     if(k==="u") setSort("suit");
     if(k==="n") setSort("none");
     if(k==="c") setSel([]);
-    if(s.inShop && (k==="enter"||k==="escape")) proceed();
   };
     window.addEventListener("keydown",onKey); return ()=>window.removeEventListener("keydown",onKey);
   },[s]);
@@ -222,7 +227,7 @@ function App(){
             <div className="px-2 py-1 rounded-lg bg-slate-700 text-white text-xs">Hands <b>{s.hands}</b></div>
             <div className="px-2 py-1 rounded-lg bg-slate-700 text-white text-xs">Discards <b>{s.discards}</b></div>
             <div className="px-3 py-1 rounded-xl bg-amber-400 text-black flex items-baseline gap-1">
-              <span className="text-xs">$</span><span className="text-2xl font-black leading-none">{s.money}</span>
+              <span className="text-xs">$</span><span className="text-2xl font-black leading-none tabular-nums">{s.money}</span>
             </div>
             <button onClick={reset} className="ml-2 px-3 py-1.5 text-sm rounded-xl bg-emerald-600 text-white">New Run</button>
           </div>
@@ -294,7 +299,7 @@ function App(){
             <div className="flex items-center justify-between mb-2">
               <div className="text-lg font-semibold">Shop</div>
               <div className="px-3 py-1 rounded-xl bg-amber-400 text-black flex items-baseline gap-1">
-                <span className="text-xs">$</span><span className="text-2xl font-black leading-none">{s.money}</span>
+                <span className="text-xs">$</span><span className="text-2xl font-black leading-none tabular-nums">{s.money}</span>
               </div>
             </div>
             <div className="grid grid-cols-3 gap-2">
