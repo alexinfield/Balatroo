@@ -1,0 +1,10 @@
+/* Prevent text selection while dragging across cards */
+* { -webkit-tap-highlight-color: transparent; }
+select, input, button { user-select: none; }
+body { user-select: none; }
+
+/* Card pop animation when you play a hand */
+@keyframes pop {
+  0% { transform: translateY(-4px) scale(1); opacity: 1; }
+  100% { transform: translateY(-42px) scale(1.06); opacity: 0; }
+}
