@@ -42,9 +42,9 @@ function evalHand(cards){
 const suitCls = s => s==="♠"?"text-blue-600 dark:text-blue-300":
                      s==="♥"?"text-orange-600 dark:text-orange-300":
                      s==="♣"?"text-green-600 dark:text-green-300":"text-purple-600 dark:text-purple-300";
-const rv = r => r===14?100:(r>=11&&r<=13?90+r:r);
-const sortRank = a => [...a].sort((x,y)=>rv(y.rank)-rv(x.rank)||(SUITS.indexOf(x.suit)-SUITS.indexOf(y.suit)));
-const sortSuit = a => [...a].sort((x,y)=>SUITS.indexOf(x.suit)-SUITS.indexOf(y.suit)||(rv(y.rank)-rv(x.rank)));
+const rv = r => r; // Ace (14) should be highest naturally
+const sortRank = a => [...a].sort((x,y)=> (rv(y.rank)-rv(x.rank)) || (SUITS.indexOf(x.suit)-SUITS.indexOf(y.suit)));
+const sortSuit = a => [...a].sort((x,y)=> (SUITS.indexOf(x.suit)-SUITS.indexOf(y.suit)) || (rv(y.rank)-rv(x.rank)));
 
 let _animTimer=null;
 const tierInfo = h => h==="Straight Flush"?["Legendary","bg-fuchsia-600"]
@@ -245,7 +245,8 @@ function App(){
         </div>
 
         <div className="rounded-2xl p-3 bg-white/80 dark:bg-slate-800/70 border mt-3"
-             onMouseLeave={()=>setS(x=>({...x,drag:false,dragMode:null}))}>
+             onMouseLeave={()=>setS(x=>({...x,drag:false,dragMode:null}))}
+             onContextMenu={e=>{ e.preventDefault(); }}>
           <div className="flex flex-wrap">
             {s.hand.map(c=>{
               const onDown = e => {
